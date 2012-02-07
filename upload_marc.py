@@ -15,6 +15,16 @@ logger.setLevel(logging.WARNING)
 
 
 def upload_marc(item):
+
+    # Check for S3 keys.
+    try:
+        s3_keys = sys.argv[1]
+    except IndexError:
+        print ('\n\nYou must supply your S3 Keys as a command line argument!'
+               '\n\nexample: ./upload_marc.py Y6oUrAcCEs4sK8ey:youRSECRETKEYzZzZ'
+               '\n\nYou can get your S3 keys here: ' 
+               'http://www.archive.org/account/s3.php')
+
     item = item.strip()
     marc = '%s_marc.xml' % item
 
@@ -29,7 +39,7 @@ def upload_marc(item):
     request = urllib2.Request('http://s3.us.archive.org/%s/%s' % 
                               (item, marc), data=marc_data)
     opener = urllib2.build_opener(urllib2.HTTPHandler)
-    request.add_header('authorization', 'LOW %s' % sys.argv[1])
+    request.add_header('authorization', 'LOW %s' % s3_keys)
     request.add_header('Content-Type', 'text/xml')
     request.get_method = lambda: 'PUT' 
 
@@ -48,8 +58,11 @@ def upload_marc(item):
 def main():
     
     # Upload all of the MARC records from "itemlist" in current directory.
-    for item in open('itemlist'):
-        print upload_marc(item)
+    try:
+        for item in open('itemlist'):
+            print upload_marc(item)
+    except IOError:
+        print "You need to create an itemlist!"
         
 if __name__ == "__main__":
     main()
