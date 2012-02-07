@@ -13,5 +13,4 @@ Separated by a colon):
         ./upload_marc.py Y6oUrAcCEs4sK8ey:youRSECRETKEYzZzZ     
 
 ## Notes
-* All HTTP errors and missing file errors are logged to a file called `upload_marc.log`.
-
+* All HTTP errors and missing file errors are logged to a file named `upload_marc.log`.
